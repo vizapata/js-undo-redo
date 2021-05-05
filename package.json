@@ -1,0 +1,24 @@
+{
+  "name": "js-undo-redo",
+  "version": "1.0.0",
+  "description": "A basic javascript library to enable undo/redo features based on Command Pattern",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vizapata/js-undo-redo.git"
+  },
+  "keywords": [
+    "undo",
+    "redo",
+    "Command Pattern"
+  ],
+  "author": "Victor Zapata",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/vizapata/js-undo-redo/issues"
+  },
+  "homepage": "https://github.com/vizapata/js-undo-redo#readme"
+}
