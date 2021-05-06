@@ -1,8 +1,4 @@
-function Action(theAction, theUndoAction, theActionValue) {
-  this.execute = theAction
-  this.undo = theUndoAction
-  this.value = theActionValue
-}
+'use strict'
 
 const ACTIONS_TO_KEEP = 50
 const status = {
@@ -42,9 +38,11 @@ const actionTracker = {
 }
 
 const undoRedoManager = {
-  execute: (action) => {
-    if (!(action instanceof Action)) throw new Error('The parameter is not a valid action', action)
-    return actionTracker.add(action)
+  status,
+  get canUndo() { return status.canUndo },
+  get canRedo() { return status.canRedo },
+  execute: (execute, undo, value) => {
+    return actionTracker.add({ execute, undo, value })
   },
   undo: () => {
     if (status.canUndo) return actionTracker.undo()
@@ -54,6 +52,6 @@ const undoRedoManager = {
   }
 }
 
-exports.Action = Action
-exports.status = status
-exports.undoRedoManager = undoRedoManager
+
+module.exports = undoRedoManager
+module.exports.default = undoRedoManager

@@ -10,15 +10,12 @@ A basic javascript library to enable undo/redo features based on Command Pattern
 $ npm install --save js-undo-redo
 ```
 
-## Usage
+## Basic example
 
 The following is a basic example to update a state variable. It demonstrates how to use the three available operations: execute, undo, redo. 
 
 ```
 const jsUndoRedo = require("js-undo-redo")
-// Other alternatives:
-// import * as jsUndoRedo from 'js-undo-redo'
-// import { Action, status, undoRedoManager } from 'js-undo-redo'
 
 let stateValue = 0
 const addValue = function(val){
@@ -28,45 +25,70 @@ const removeValue = function(val){
     stateValue -= val
 }
 
-jsUndoRedo.undoRedoManager.execute(new jsUndoRedo.Action(addValue, removeValue, 5))
-console.log(stateValue, jsUndoRedo.status.canUndo, jsUndoRedo.status.canRedo) // 5, true, false
+jsUndoRedo.execute(addValue, removeValue, 5)
+console.log(stateValue, jsUndoRedo.canUndo, jsUndoRedo.canRedo) // 5, true, false
 
-jsUndoRedo.undoRedoManager.execute(new jsUndoRedo.Action(removeValue, addValue, 3))
-console.log(stateValue, jsUndoRedo.status.canUndo, jsUndoRedo.status.canRedo) // 2, true, false
+jsUndoRedo.undo()
+console.log(stateValue, jsUndoRedo.canUndo, jsUndoRedo.canRedo) // 0, false, true
 
-jsUndoRedo.undoRedoManager.undo()
-console.log(stateValue, jsUndoRedo.status.canUndo, jsUndoRedo.status.canRedo) // 5, true, true
+jsUndoRedo.redo()
+console.log(stateValue, jsUndoRedo.canUndo, jsUndoRedo.canRedo) // 5, true, false
 
-// You can use lambda expressions as well. Remember add the reverse operation
-jsUndoRedo.undoRedoManager.execute(new jsUndoRedo.Action(
+```
+
+## Advanced example
+
+This example demonstrates the following features:
+- A new executed operation clears any undo-ed actions and they cannot be redo-ed
+- You can pass lambda functions as parameters too
+- You cannot undo/redo beyond the saved actions
+- The `status` property can be used instead of getters (`canUndo`, `canRedo`) to integrate with reactive apps (like Vue, React, etc)
+
+```
+const jsUndoRedo = require("js-undo-redo")
+
+let stateValue = 0
+const addValue = (val) => stateValue += val
+const removeValue = (val) => stateValue -= val
+
+jsUndoRedo.execute(addValue, removeValue, 5)
+console.log(stateValue, jsUndoRedo.canUndo, jsUndoRedo.canRedo) // 5, true, false
+
+jsUndoRedo.execute(removeValue, addValue, 3)
+console.log(stateValue, jsUndoRedo.canUndo, jsUndoRedo.canRedo) // 2, true, false
+
+jsUndoRedo.undo()
+console.log(stateValue, jsUndoRedo.canUndo, jsUndoRedo.canRedo) // 5, true, true
+
+// You can use lambda expressions as well.
+jsUndoRedo.execute(
     (x) => { stateValue += 2*x },
     (x) => { stateValue -= 2*x },
     4 
-))
-console.log(stateValue, jsUndoRedo.status.canUndo, jsUndoRedo.status.canRedo) // 13, true, false
+)
+console.log(stateValue, jsUndoRedo.canUndo, jsUndoRedo.canRedo) // 13, true, false
 
-jsUndoRedo.undoRedoManager.undo()
-console.log(stateValue, jsUndoRedo.status.canUndo, jsUndoRedo.status.canRedo) // 5, true, true
+jsUndoRedo.undo()
+console.log(stateValue, jsUndoRedo.canUndo, jsUndoRedo.canRedo) // 5, true, true
 
-jsUndoRedo.undoRedoManager.redo()
-console.log(stateValue, jsUndoRedo.status.canUndo, jsUndoRedo.status.canRedo) // 13, true, false
+jsUndoRedo.redo()
+console.log(stateValue, jsUndoRedo.canUndo, jsUndoRedo.canRedo) // 13, true, false
 
-jsUndoRedo.undoRedoManager.undo()
-jsUndoRedo.undoRedoManager.undo()
-console.log(stateValue, jsUndoRedo.status.canUndo, jsUndoRedo.status.canRedo) // 0, false, true
+jsUndoRedo.undo()
+jsUndoRedo.undo()
+console.log(stateValue, jsUndoRedo.canUndo, jsUndoRedo.canRedo) // 0, false, true
+
+console.log(jsUndoRedo.status) // {canUndo: false, canRedo: true}
 
 ```
 
 ## API
 
-The library uses the Command Pattern to keep a track on the commands executed. So each action executed must have an equivalent reverse action.
+The library encapsulates the logic behind the Command Pattern to keep a track of executed operations. It has the following functions/properties:
 
-The js-undo-redo library has the following objects:
-
-- `Action`: A class that contains the action to be executed, the reverse action and the value used as parameter to execute any of them. The execute method expects to be an instance of this.
+- `execute(action, reverseAction, parameter)`: Executes the normal action. Note that you must provide the reverse action. The parameters are passed to both functions when executed.
+- `undo()`: Executes the reverse operation of the current action.
+- `redo()`: Re-executes the normal action of the last undo-ed action.
 - `status`: An object with two boolean properties that indicate in any moment if is possible to execute the undo/redo actions. `{canUndo, canRedo}`
-- `undoRedoManager`: This object encapsulates the logic behind the Command Pattern keeping a track of executed operations. It has three methods:
-
-  - `execute`: Executes the normal action. Note, the parameter must be an instance of Action.
-  - `undo`: Executes the reverse operation of the current action.
-  - `redo`: Re-executes the normal action of the last undo-ed action.
+- `canUndo`: A getter for `status.canUndo`
+- `canRedo`: A getter for `status.canRedo`
