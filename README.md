@@ -6,7 +6,7 @@ A basic javascript library to enable undo/redo features based on Command Pattern
 
 ## Install
 
-```
+```bash
 $ npm install --save js-undo-redo
 ```
 
@@ -14,7 +14,7 @@ $ npm install --save js-undo-redo
 
 The following is a basic example to update a state variable. It demonstrates how to use the three available operations: execute, undo, redo. 
 
-```
+```js
 const jsUndoRedo = require("js-undo-redo")
 
 let stateValue = 0
@@ -44,7 +44,7 @@ This example demonstrates the following features:
 - You cannot undo/redo beyond the saved actions
 - The `status` property can be used instead of getters (`canUndo`, `canRedo`) to integrate with reactive apps (like Vue, React, etc)
 
-```
+```js
 const jsUndoRedo = require("js-undo-redo")
 
 let stateValue = 0
