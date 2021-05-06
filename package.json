@@ -1,6 +1,6 @@
 {
   "name": "js-undo-redo",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A basic javascript library to enable undo/redo features based on Command Pattern",
   "main": "index.js",
   "scripts": {
