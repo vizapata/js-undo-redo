@@ -1,5 +1,5 @@
 [![npm version](https://img.shields.io/npm/v/js-undo-redo.svg)](https://www.npmjs.com/package/js-undo-redo)
-[![Build Status](https://github.com/vizapata/js-undo-redo/workflows/CI/badge.svg)](https://github.com/vizapata/js-undo-redo/actions)
+[![Build Status](https://github.com/vizapata/js-undo-redo/actions/workflows/node.js.yml/badge.svg)](https://github.com/vizapata/js-undo-redo/actions)
 
 # js-undo-redo
 A basic javascript library to enable undo/redo features based on Command Pattern
